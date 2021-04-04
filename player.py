@@ -86,12 +86,12 @@ class Player(game.GameObject):
         # Обработка звука побежденного врага
         sound = "music/en_down{}.wav".format(random.randint(1, 4))
         en_down_sound = pygame.mixer.Sound(sound)
-        en_down_sound.set_volume(0.2)
+        en_down_sound.set_volume(values.en_down_sound_volume)
         pygame.mixer.Sound.play(en_down_sound)
 
         # Увеличение очков
         self.score += bonus
-        if self.score // 10 > self.armor_got:
+        if self.score // values.plus_armor_border > self.armor_got:
             self.armor += 1
             self.armor_got += 1
         en.is_alive = False
@@ -137,7 +137,7 @@ class Player(game.GameObject):
                 pygame.display.update()
 
         # Проверка на победу
-        if self.score >= 25:
+        if self.score >= values.win_border:
 
             # Обработка звука и смена сцены на сцену выигранной игры
             pygame.mixer.music.load("music/you_win.wav")

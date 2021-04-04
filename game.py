@@ -77,9 +77,9 @@ def init_snd():
     """
     Необходима для инициализации звука в игре
     """
-    pygame.mixer.pre_init(44100, -16, 5, 4096)
+    pygame.mixer.pre_init(values.mixer_frequency, values.mixer_size, values.mixer_channels, values.mixer_buffer)
     pygame.mixer.init()
-    pygame.mixer.music.load("music/back_music.wav")
+    pygame.mixer.music.load(values.back_music)
     pygame.mixer.music.play(-1)
 
 
@@ -115,12 +115,12 @@ def track_event(pl, en):
                 # Задание места, попав в которое выстрел будет защитан как удачный
                 if en.x + en.width // 3 <= pl.x <= en.x + 2 * en.width // 3 and en.y + en.height // 3 <= \
                         pl.y <= en.y + 2 * en.height // 3:
-                    pl.shot_count(2, en)
+                    pl.shot_count(values.nice_shot_bonus, en)
                     values.nice_shot = True
                     values.nice_shot_start = time.time()
                 # Задание места, попав в которое выстрел будет защитан как меткий
                 elif en.x <= pl.x <= en.x + en.width and en.y <= pl.y <= en.y + en.height:
-                    pl.shot_count(1, en)
+                    pl.shot_count(values.shot_bonus, en)
                 # Задание результата промаха
                 else:
                     pl.score -= 1
