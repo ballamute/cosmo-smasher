@@ -6,22 +6,24 @@ import game
 import player
 import values
 
+# Инициализация pygame
+pygame.init()
+clock = pygame.time.Clock()
+
+# Задание дисплея
+display = pygame.display.set_mode((values.dis_width, values.dis_height))
+pygame.display.set_caption(values.game_name)
+
+# Задание фона игры
+bg = game.Background(values.bg_img, [0, 0])
+
 
 def main():
-    # Инициализация pygame и mixer
-    pygame.init()
-    game.init_snd()
-
-    clock = pygame.time.Clock()
-    # Задание дисплея
-    display = pygame.display.set_mode((values.dis_width, values.dis_height))
-    pygame.display.set_caption(values.game_name)
-
-    # Задание фона игры
-    bg = game.Background(values.bg_img, [0, 0])
-
     # Инициализация переменных
     game.init_game()
+
+    # Инициализация mixer
+    game.init_snd()
 
     # Создание игрока и врага
     pl = player.Player()
@@ -58,6 +60,10 @@ def main():
 
         # Проверка счета игрока для определения победы и поражения
         pl.score_check(display)
+
+        # Если пользователь нажал на Try again, игра начинается заново
+        if values.again:
+            main()
 
         # Обработка ситуации, в которой игрок оказывается атакованным
         pl.if_attacked(display, en)

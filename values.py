@@ -3,6 +3,7 @@ import colors
 # Значения игры
 game_name = "Cosmo smasher"
 started = False
+again = False
 FPS = 300
 dis_width = 1000
 dis_height = 600
@@ -32,12 +33,12 @@ is_alive = False
 begin_of_life = 0
 
 # Значения переменных выстрела
-shot = " "
 nice_shot = False
 nice_shot_start = 0
 nice_shot_bonus = 2
 shot_bonus = 1
 miss_penalty = 1
+shot = " "
 
 # Значения переменных похвалы
 praises = ["Bull eye!", "Nice shot!", "What an aim!", "Amazing!", "Perfect!"]
@@ -96,7 +97,7 @@ bear_score_size = 30
 bear_score_color = colors.WHITE
 
 # Значения переменных отображения Game Over
-over_x = dis_width // 2 - 150
+over_x = dis_width // 2 - 170
 over_y = dis_height // 2 - 50
 over_size = 60
 over_color = colors.RED
@@ -113,3 +114,19 @@ win_x = dis_width // 2 - 140
 win_y = dis_height // 2 - 50
 win_size = 60
 win_color = colors.GREEN
+
+# Значения переменных отображения кнопки Try again
+try_again_tl = (421, 373)
+try_again_br = (551, 393)
+try_again_x = dis_width // 2 - 80
+try_again_y = dis_height // 2 + 70
+try_again_size = 30
+try_again_color = colors.WHITE
+
+# Значения переменных отображения кнопки Exit
+exit_tl = (461, 418)
+exit_br = (507, 439)
+exit_x = dis_width // 2 - 40
+exit_y = dis_height // 2 + 115
+exit_size = 30
+exit_color = colors.WHITE

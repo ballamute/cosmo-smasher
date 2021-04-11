@@ -1,5 +1,4 @@
 import pygame
-import sys
 
 import random
 import time
@@ -109,26 +108,25 @@ class Player(game.GameObject):
             pygame.mixer.music.load(values.game_over_snd)
             pygame.mixer.music.play()
             while True:
-                for i in pygame.event.get():
-                    if i.type == pygame.QUIT:
-                        sys.exit()
                 clock.tick(values.FPS)
                 display.fill(colors.BLACK)
-
                 # Событие попадания в бедного мишку
                 if values.shot in values.friends_images:
-                    game.print_text(display, 'How dare you shoot a harmless bear?', values.bear_ask_x,
-                                    values.bear_ask_y, font_size=values.bear_ask_size, font_color=values.bear_ask_color)
-                    game.print_text(display, 'YOUR FUCKING SCORE IS: ' + str(self.score), values.bear_score_x,
-                                    values.bear_score_y, font_size=values.bear_score_size,
-                                    font_color=values.bear_score_color)
+                    game.print_bear_shot_text(display, self.score)
                 # Основное событие проигрыша
                 else:
-                    game.print_text(display, 'GAME OVER', values.over_x, values.over_y,
-                                    font_size=values.over_size, font_color=values.over_color)
-                    game.print_text(display, 'YOUR SCORE IS: ' + str(self.score), values.ov_score_x,
-                                    values.ov_score_y, font_size=values.ov_score_size, font_color=values.ov_score_color)
+                    game.print_game_over_text(display, self.score)
+                game.print_buttons(display)
                 pygame.display.update()
+
+                # Окрашивание кнопок, если на них наведен курсор
+                pos = pygame.mouse.get_pos()
+                game.color_buttons(pos)
+                # Обработка событий
+                events = pygame.event.get()
+                game.end_events(events, pos)
+                if values.again:
+                    return
 
         # Проверка на победу
         if self.score >= values.win_border:
@@ -137,14 +135,22 @@ class Player(game.GameObject):
             pygame.mixer.music.load(values.win_snd)
             pygame.mixer.music.play()
             while True:
-                for i in pygame.event.get():
-                    if i.type == pygame.QUIT:
-                        sys.exit()
                 pygame.display.update()
                 clock.tick(values.FPS)
                 display.fill(colors.BLACK)
-                game.print_text(display, 'YOU WIN', values.win_x, values.win_y,
-                                font_size=values.win_size, font_color=values.win_color)
+                game.print_text(display, 'YOU WIN', values.win_x, values.win_y, font_size=values.win_size,
+                                font_color=values.win_color)
+                game.print_buttons(display)
+                pygame.display.update()
+
+                # Окрашивание кнопок, если на них наведен курсор
+                pos = pygame.mouse.get_pos()
+                game.color_buttons(pos)
+                # Обработка событий
+                events = pygame.event.get()
+                game.end_events(events, pos)
+                if values.again:
+                    return
 
     def if_attacked(self, display, en):
         """

@@ -31,6 +31,9 @@ class Background(pygame.sprite.Sprite):
 
 
 def init_game():
+    """
+    Необходима для инициализации переменных и обновления их пре рестарте игры
+    """
     values.player_score = 0
     values.player_armor = 0
     values.player_armor_got = 0
@@ -40,9 +43,11 @@ def init_game():
     values.begin_of_life = 0
 
     values.started = False
+    values.again = False
 
     values.nice_shot = False
     values.nice_shot_start = 0
+    values.shot = " "
 
 
 def fix(num, digits=0):
@@ -69,6 +74,78 @@ def print_text(display, message, f_x, f_y, font_color=colors.WHITE, font_type='f
     font_type = pygame.font.Font(font_type, font_size)
     text = font_type.render(message, True, font_color)
     display.blit(text, (f_x, f_y))
+
+
+def print_buttons(display):
+    """
+    Необходима для вывода текста кнопок Exit и Try again с заданными параметрами
+    :param display: Дисплей для вывода и отрисовки
+    """
+    print_text(display, 'Try again', values.try_again_x, values.try_again_y, font_size=values.try_again_size,
+               font_color=values.try_again_color)
+    print_text(display, 'Exit', values.exit_x, values.exit_y, font_size=values.exit_size,
+               font_color=values.exit_color)
+
+
+def end_events(events, pos):
+    """
+    Необходима для обработки событий на экранах Победы и поражения
+    :param events: Массив событий клавиатуры и мыши
+    :param pos: Координаты положения курсора мыши
+    """
+    for i in events:
+        if i.type == pygame.QUIT:
+            sys.exit()
+        if i.type == pygame.MOUSEBUTTONDOWN:
+            if pygame.mouse.get_pressed(3)[0]:
+                if values.try_again_tl[0] <= pos[0] <= values.try_again_br[0] and values.try_again_tl[1] <= pos[1] \
+                        <= values.try_again_br[1]:
+                    values.again = True
+                    return
+                elif values.exit_tl[0] <= pos[0] <= values.exit_br[0] and values.exit_tl[1] <= pos[1] \
+                        <= values.exit_br[1]:
+                    sys.exit()
+
+
+def color_buttons(pos):
+    """
+    Необходима для контроля цвета текста кнопок Try again и Exit в зависимости
+    от положения курсора пользователя
+    :param pos: Координаты положения курсора мыши
+    """
+    if values.try_again_tl[0] <= pos[0] <= values.try_again_br[0] and values.try_again_tl[1] <= pos[1] <= \
+            values.try_again_br[1]:
+        values.try_again_color = colors.GRAY
+    elif values.exit_tl[0] <= pos[0] <= values.exit_br[0] and values.exit_tl[1] <= \
+            pos[1] <= values.exit_br[1]:
+        values.exit_color = colors.GRAY
+    else:
+        values.try_again_color = colors.WHITE
+        values.exit_color = colors.WHITE
+
+
+def print_bear_shot_text(display, score):
+    """
+    Необходима для печати текста экрана поражения при условии попадания в медведя
+    :param display: Дисплей для вывода и отрисовки
+    :param score: Количество очков игрока
+    """
+    print_text(display, 'How dare you shoot a harmless bear?', values.bear_ask_x, values.bear_ask_y,
+               font_size=values.bear_ask_size, font_color=values.bear_ask_color)
+    print_text(display, 'YOUR FUCKING SCORE IS: ' + str(score), values.bear_score_x, values.bear_score_y,
+               font_size=values.bear_score_size, font_color=values.bear_score_color)
+
+
+def print_game_over_text(display, score):
+    """
+    Необходима для печати текста экрана поражения
+    :param display: Дисплей для вывода и отрисовки
+    :param score: Количество очков игрока
+    """
+    print_text(display, 'GAME OVER', values.over_x, values.over_y, font_size=values.over_size,
+               font_color=values.over_color)
+    print_text(display, 'YOUR SCORE IS: ' + str(score), values.ov_score_x, values.ov_score_y,
+               font_size=values.ov_score_size, font_color=values.ov_score_color)
 
 
 def praise_player(display):
