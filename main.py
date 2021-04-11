@@ -15,10 +15,13 @@ def main():
     clock = pygame.time.Clock()
     # Задание дисплея
     display = pygame.display.set_mode((values.dis_width, values.dis_height))
-    pygame.display.set_caption("Cosmo smasher")
+    pygame.display.set_caption(values.game_name)
 
     # Задание фона игры
-    bg = game.Background('pics/bg.png', [0, 0])
+    bg = game.Background(values.bg_img, [0, 0])
+
+    # Инициализация переменных
+    game.init_game()
 
     # Создание игрока и врага
     pl = player.Player()

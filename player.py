@@ -13,13 +13,6 @@ class Player(game.GameObject):
     """
     Класс Player используется для создания игрока
     Наследуется от класса GameObject
-    В классе Player определены функции:
-    __init__()
-    draw(display)
-    track_move(keys)
-    shot_count(bonus, en)
-    score_check(display, en)
-    if_attacked(display, en)
     """
     def __init__(self):
         """
@@ -28,14 +21,14 @@ class Player(game.GameObject):
         """
         game.GameObject.__init__(self)
         self.r = values.player_radius
-        self.cross = pygame.image.load("pics/cross1.png")
+        self.cross = pygame.image.load(values.cross_img)
         self.move_speed = values.player_move_speed
         self.time_for_kill = values.player_time_for_kill
         self.score = values.player_score
         self.armor = values.player_armor
         self.armor_got = values.player_armor_got
-        self.shot_sound = pygame.mixer.Sound("music/laser.wav")
-        self.dead_sound = pygame.mixer.Sound("music/dead.wav")
+        self.shot_sound = pygame.mixer.Sound(values.shot_snd)
+        self.dead_sound = pygame.mixer.Sound(values.dead_snd)
 
     def draw(self, display):
         """
@@ -84,7 +77,7 @@ class Player(game.GameObject):
             return
 
         # Обработка звука побежденного врага
-        sound = "music/en_down{}.wav".format(random.randint(1, 4))
+        sound = f"music/en_down{random.randint(1, 4)}.wav"
         en_down_sound = pygame.mixer.Sound(sound)
         en_down_sound.set_volume(values.en_down_sound_volume)
         pygame.mixer.Sound.play(en_down_sound)
@@ -104,7 +97,7 @@ class Player(game.GameObject):
         clock = pygame.time.Clock()
 
         # Проверка на проигрыш
-        if self.armor < 0 or self.score < 0:
+        if self.armor < values.arm_lose_border or self.score < values.scr_lose_border:
 
             # Ограничение в 0 очков
             if self.score < 0:
@@ -113,7 +106,7 @@ class Player(game.GameObject):
             # Обработка звука и смена сцены на сцену проигранной игры
             pygame.mixer.Sound.play(self.dead_sound)
             time.sleep(0.5)
-            pygame.mixer.music.load("music/game_over.wav")
+            pygame.mixer.music.load(values.game_over_snd)
             pygame.mixer.music.play()
             while True:
                 for i in pygame.event.get():
@@ -124,23 +117,24 @@ class Player(game.GameObject):
 
                 # Событие попадания в бедного мишку
                 if values.shot in values.friends_images:
-                    game.print_text(display, 'How dare you shoot a harmless bear?', values.dis_width // 2 - 330,
-                                    values.dis_height // 2 - 50, font_size=40, font_color=colors.RED)
-                    game.print_text(display, 'YOUR FUCKING SCORE IS: ' + str(self.score), values.dis_width // 2 - 170,
-                                    values.dis_height // 2 + 25, font_size=30, font_color=colors.WHITE)
+                    game.print_text(display, 'How dare you shoot a harmless bear?', values.bear_ask_x,
+                                    values.bear_ask_y, font_size=values.bear_ask_size, font_color=values.bear_ask_color)
+                    game.print_text(display, 'YOUR FUCKING SCORE IS: ' + str(self.score), values.bear_score_x,
+                                    values.bear_score_y, font_size=values.bear_score_size,
+                                    font_color=values.bear_score_color)
                 # Основное событие проигрыша
                 else:
-                    game.print_text(display, 'GAME OVER', values.dis_width // 2 - 150, values.dis_height // 2 - 50,
-                                    font_size=60, font_color=colors.RED)
-                    game.print_text(display, 'YOUR SCORE IS: ' + str(self.score), values.dis_width // 2 - 125,
-                                    values.dis_height // 2 + 25, font_size=30, font_color=colors.WHITE)
+                    game.print_text(display, 'GAME OVER', values.over_x, values.over_y,
+                                    font_size=values.over_size, font_color=values.over_color)
+                    game.print_text(display, 'YOUR SCORE IS: ' + str(self.score), values.ov_score_x,
+                                    values.ov_score_y, font_size=values.ov_score_size, font_color=values.ov_score_color)
                 pygame.display.update()
 
         # Проверка на победу
         if self.score >= values.win_border:
 
             # Обработка звука и смена сцены на сцену выигранной игры
-            pygame.mixer.music.load("music/you_win.wav")
+            pygame.mixer.music.load(values.win_snd)
             pygame.mixer.music.play()
             while True:
                 for i in pygame.event.get():
@@ -149,8 +143,8 @@ class Player(game.GameObject):
                 pygame.display.update()
                 clock.tick(values.FPS)
                 display.fill(colors.BLACK)
-                game.print_text(display, 'YOU WIN', values.dis_width // 2 - 140, values.dis_height // 2 - 50,
-                                font_size=60, font_color=colors.GREEN)
+                game.print_text(display, 'YOU WIN', values.win_x, values.win_y,
+                                font_size=values.win_size, font_color=values.win_color)
 
     def if_attacked(self, display, en):
         """
