@@ -34,7 +34,8 @@ class Enemy(game.GameObject):
         if random.randint(0, 10) != 0:
             self.image_name = values.enemy_images[random.randint(0, len(values.enemy_images)) - 1]
         else:
-            self.image_name = values.friends_images[random.randint(0, len(values.friends_images)) - 1]
+            if values.started:
+                self.image_name = values.friends_images[random.randint(0, len(values.friends_images)) - 1]
         self.image = pygame.image.load(self.image_name)
 
     def born(self):

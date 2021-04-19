@@ -6,6 +6,7 @@ import game
 import player
 import values
 
+
 # Инициализация pygame
 pygame.init()
 clock = pygame.time.Clock()
@@ -15,7 +16,7 @@ display = pygame.display.set_mode((values.dis_width, values.dis_height))
 pygame.display.set_caption(values.game_name)
 
 # Задание фона игры
-bg = game.Background(values.bg_img, [0, 0])
+game_bg = game.Background(values.game_bg_img, [0, 0])
 
 
 def main():
@@ -25,9 +26,17 @@ def main():
     # Инициализация mixer
     game.init_snd()
 
+    if values.game_is_on:
+        game.show_menu(display)
+        values.game_is_on = False
+
+    if values.control == 'keyboard':
+        values.player_time_for_kill = 2
+    else:
+        values.player_time_for_kill = 0.5
     # Создание игрока и врага
-    pl = player.Player()
-    en = enemy.Enemy()
+    game_player = player.Player()
+    game_enemy = enemy.Enemy()
 
     # Основной цикл игры
     while True:
@@ -35,38 +44,38 @@ def main():
         clock.tick(values.FPS)
 
         # Вывод фона игры
-        display.blit(bg.image, bg.rect)
+        display.blit(game_bg.image, game_bg.rect)
 
         # Отслеживание движений и действий игрока
-        pl.track_move(pygame.key.get_pressed())
+        game_player.track_move(pygame.key.get_pressed())
 
         # Рождение нового врага, если старый был преодолен
-        en.born()
+        game_enemy.born()
 
         # Прорисовка врага
-        en.draw(display)
+        game_enemy.draw(display)
 
         # Прорисовка интерфейса игры: очков, защиты, оставшегося для убийства времени
-        game.print_interface(display, pl, en)
+        game.print_interface(display, game_player, game_enemy)
 
         # Отслеживание событий клавиатуры
-        game.track_event(pl, en)
+        game.track_event(game_player, game_enemy)
 
         # Похвала для игрока за меткий выстрел
         game.praise_player(display)
 
         # Прорисовка игрока
-        pl.draw(display)
+        game_player.draw(display)
 
         # Проверка счета игрока для определения победы и поражения
-        pl.score_check(display)
+        game_player.score_check(display)
 
         # Если пользователь нажал на Try again, игра начинается заново
         if values.again:
             main()
 
         # Обработка ситуации, в которой игрок оказывается атакованным
-        pl.if_attacked(display, en)
+        game_player.if_attacked(display, game_enemy)
 
         # Отрисовка части прицела игрока
         values.line_color = colors.RED
@@ -76,4 +85,5 @@ def main():
 
 
 # Запуск
+values.game_is_on = True
 main()

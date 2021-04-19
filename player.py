@@ -39,29 +39,38 @@ class Player(game.GameObject):
         display.blit(self.cross, (self.x - self.cross.get_width() // 2, self.y - self.cross.get_height() // 2))
 
     def track_move(self, keys):
-        """
-        Необходима для отслеживания движения Player
-        :param keys: Массив со значениями, равными 1, если кнопка по соответствующему индексу нажата,
-        и 0 в обратном случае
-        """
+        if values.control == "keyboard":
+            # Задание клавиш управления прицелом
+            left = keys[pygame.K_LEFT] or keys[pygame.K_a]
+            right = keys[pygame.K_RIGHT] or keys[pygame.K_d]
+            up = keys[pygame.K_UP] or keys[pygame.K_w]
+            down = keys[pygame.K_DOWN] or keys[pygame.K_s]
+            shoot = keys[pygame.K_SPACE]
 
-        # Проверка того, была ли клавиша движения или стрельбы, если да, то хотя бы одно значение массива keys равно 1
-        if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT] or keys[pygame.K_UP] or keys[pygame.K_DOWN] or \
-                keys[pygame.K_SPACE]:
-            values.started = True
+            # Проверка того, была ли клавиша движения или стрельбы, если да, то хотя бы одно
+            # значение массива keys равно 1
+            if left or right or up or down or shoot:
+                values.started = True
 
-        # Отслеживание нажатых клавиш стрелок и положения прицела относительно границ экрана и изменение положения
-        # прицела
-        if keys[pygame.K_LEFT] and self.x - self.r != 0:
-            self.x -= self.move_speed
-        elif keys[pygame.K_RIGHT] and self.x + self.r != values.dis_width:
-            self.x += self.move_speed
-        if keys[pygame.K_UP] and self.y - self.r != 0:
-            self.y -= self.move_speed
-        elif keys[pygame.K_DOWN] and self.y + self.r != values.dis_height:
-            self.y += self.move_speed
-        if keys[pygame.K_SPACE]:
-            values.line_color = colors.YELLOW
+            # Отслеживание нажатых клавиш стрелок и положения прицела относительно границ экрана и изменение положения
+            # прицела
+            if left and self.x - self.r != 0:
+                self.x -= self.move_speed
+            elif right and self.x + self.r != values.dis_width:
+                self.x += self.move_speed
+            if up and self.y - self.r != 0:
+                self.y -= self.move_speed
+            elif down and self.y + self.r != values.dis_height:
+                self.y += self.move_speed
+            if shoot:
+                values.line_color = colors.YELLOW
+        else:
+            pos = pygame.mouse.get_pos()
+            self.x = pos[0]
+            self.y = pos[1]
+            pressed = pygame.mouse.get_pressed(3)
+            if pressed[0]:
+                values.line_color = colors.YELLOW
 
     def shot_count(self, bonus, en):
         """
@@ -100,8 +109,7 @@ class Player(game.GameObject):
         if self.armor < values.arm_lose_border or self.score < values.scr_lose_border:
 
             # Ограничение в 0 очков
-            if self.score < 0:
-                self.score = 0
+            self.score = max(self.score, 0)
 
             # Обработка звука и смена сцены на сцену проигранной игры
             pygame.mixer.Sound.play(self.dead_sound)

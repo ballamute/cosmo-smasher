@@ -2,11 +2,18 @@ import colors
 
 # Значения игры
 game_name = "Cosmo smasher"
+key_control = "keyboard"
+mouse_control = "mouse"
+def_font = "fonts/rostov.ttf"
+control = mouse_control
+game_is_on = False
 started = False
 again = False
 FPS = 300
 dis_width = 1000
 dis_height = 600
+center_x = dis_width // 2
+center_y = dis_height // 2
 
 # Значения переменных игрока
 player_move_speed = 2
@@ -45,7 +52,8 @@ praises = ["Bull eye!", "Nice shot!", "What an aim!", "Amazing!", "Perfect!"]
 praise_chs = "Bull eye!"
 
 # Значения переменных изображений
-bg_img = "pics/bg.png"
+game_bg_img = "pics/game_bg.png"
+menu_bg_img = "pics/menu_bg.jpg"
 def_en_image = "pics/party_saucer.png"
 cross_img = "pics/cross1.png"
 enemy_images = ["pics/party_creamer.png", "pics/party_saucer.png", "pics/wing_fish.png", "pics/skeleton.png"]
@@ -126,7 +134,59 @@ try_again_color = colors.WHITE
 # Значения переменных отображения кнопки Exit
 exit_tl = (461, 418)
 exit_br = (507, 439)
-exit_x = dis_width // 2 - 40
-exit_y = dis_height // 2 + 115
+exit_x = center_x - 40
+exit_y = center_y + 115
 exit_size = 30
 exit_color = colors.WHITE
+
+# Значения переменных отображения кнопки Play in menu
+play_tl = (431, 285)
+play_br = (542, 320)
+play_x = center_x - 70
+play_y = center_y - 20
+play_size = 50
+play_color = colors.WHITE
+
+# Значения переменных отображения кнопки Exit in menu
+exit_menu_tl = (461, 508)
+exit_menu_br = (522, 536)
+exit_menu_x = center_x - 40
+exit_menu_y = center_y + 205
+exit_menu_size = 40
+exit_menu_color = colors.WHITE
+
+# Значения переменных отображения кнопки mouse in menu
+mouse_menu_tl = (552, 393)
+mouse_menu_br = (638, 414)
+mouse_menu_x = center_x + 50
+mouse_menu_y = center_y + 90
+mouse_menu_size = 30
+mouse_menu_color = colors.WHITE
+
+# Значения переменных отображения кнопки mouse in menu
+key_menu_tl = (301, 393)
+key_menu_br = (437, 412)
+key_menu_x = center_x - 200
+key_menu_y = center_y + 90
+key_menu_size = 30
+key_menu_color = colors.WHITE
+
+# Значения переменных отображения надписи control in menu
+control_x = center_x - 80
+control_y = center_y + 50
+control_size = 30
+control_color = colors.WHITE
+
+# Значения переменных отображения надписи control in menu
+back_tl = (357, 459)
+back_br = (625, 478)
+back_x = center_x - 145
+back_y = center_y + 155
+back_size = 30
+back_color = colors.WHITE
+
+# Значения переменных отображения названия игры in menu
+caption_x = center_x - 340
+caption_y = center_y - 190
+caption_size = 90
+caption_color = colors.WHITE

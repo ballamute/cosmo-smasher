@@ -60,7 +60,7 @@ def fix(num, digits=0):
     return f"{num:.{digits}f}"
 
 
-def print_text(display, message, f_x, f_y, font_color=colors.WHITE, font_type='fonts/rostov.ttf', font_size=30):
+def print_text(display, message, f_x, f_y, font_color=colors.WHITE, font_type=values.def_font, font_size=30):
     """
     Необходима для вывода текста с заданными параметрами
     :param display: Дисплей для вывода и отрисовки
@@ -85,6 +85,8 @@ def print_buttons(display):
                font_color=values.try_again_color)
     print_text(display, 'Exit', values.exit_x, values.exit_y, font_size=values.exit_size,
                font_color=values.exit_color)
+    print_text(display, 'Back to main menu', values.back_x, values.back_y, font_size=values.back_size,
+               font_color=values.back_color)
 
 
 def end_events(events, pos):
@@ -105,6 +107,11 @@ def end_events(events, pos):
                 elif values.exit_tl[0] <= pos[0] <= values.exit_br[0] and values.exit_tl[1] <= pos[1] \
                         <= values.exit_br[1]:
                     sys.exit()
+                elif values.back_tl[0] <= pos[0] <= values.back_br[0] and values.back_tl[1] <= pos[1] \
+                        <= values.back_br[1]:
+                    values.game_is_on = True
+                    values.again = True
+                    return
 
 
 def color_buttons(pos):
@@ -119,9 +126,12 @@ def color_buttons(pos):
     elif values.exit_tl[0] <= pos[0] <= values.exit_br[0] and values.exit_tl[1] <= \
             pos[1] <= values.exit_br[1]:
         values.exit_color = colors.GRAY
+    elif values.back_tl[0] <= pos[0] <= values.back_br[0] and values.back_tl[1] <= pos[1] <= values.back_br[1]:
+        values.back_color = colors.GRAY
     else:
         values.try_again_color = colors.WHITE
         values.exit_color = colors.WHITE
+        values.back_color = colors.WHITE
 
 
 def print_bear_shot_text(display, score):
@@ -190,25 +200,116 @@ def track_event(pl, en):
     :param pl: Объект класса Player
     :param en: Объект класса Enemy
     """
+
     for i in pygame.event.get():
         # Обработка результата нажатия клавиши ESCAPE и комбинации Alt + F4
         if i.type == pygame.QUIT:
             sys.exit()
-        elif i.type == pygame.KEYDOWN:
-            if i.key == pygame.K_SPACE:
-                # Обработка результата нажатия клавиши SPACE
-                values.line_color = values.line_shot_color
-                values.started = True
-                pygame.mixer.Sound.play(pl.shot_sound)
-                # Задание места, попав в которое выстрел будет защитан как меткий
-                if en.x + en.width // 3 <= pl.x <= en.x + 2 * en.width // 3 and en.y + en.height // 3 <= \
-                        pl.y <= en.y + 2 * en.height // 3:
-                    pl.shot_count(values.nice_shot_bonus, en)
-                    values.nice_shot = True
-                    values.nice_shot_start = time.time()
-                # Задание места, попав в которое выстрел будет защитан как удачный
-                elif en.x <= pl.x <= en.x + en.width and en.y <= pl.y <= en.y + en.height:
-                    pl.shot_count(values.shot_bonus, en)
-                # Задание результата промаха
-                else:
-                    pl.score -= values.miss_penalty
+        elif values.control == values.key_control:
+            if i.type == pygame.KEYDOWN:
+                if i.key == pygame.K_SPACE:
+                    process_shoot(pl, en)
+        elif values.control == values.mouse_control:
+            if i.type == pygame.MOUSEBUTTONDOWN:
+                if i.button == 1:
+                    process_shoot(pl, en)
+
+
+def process_shoot(pl, en):
+    values.line_color = values.line_shot_color
+    values.started = True
+    pygame.mixer.Sound.play(pl.shot_sound)
+
+    # Задание места, попав в которое выстрел будет защитан как меткий
+    nice_shot_tl = (en.x + en.width // 3, en.y + en.height // 3)
+    nice_shot_br = (en.x + 2 * en.width // 3, en.y + 2 * en.height // 3)
+    if nice_shot_tl[0] <= pl.x <= nice_shot_br[0] and nice_shot_tl[1] <= pl.y <= nice_shot_br[1]:
+        pl.shot_count(values.nice_shot_bonus, en)
+        values.nice_shot = True
+        values.nice_shot_start = time.time()
+    # Задание места, попав в которое выстрел будет защитан как удачный
+    elif en.x <= pl.x <= en.x + en.width and en.y <= pl.y <= en.y + en.height:
+        pl.shot_count(values.shot_bonus, en)
+    # Задание результата промаха
+    else:
+        pl.score -= values.miss_penalty
+
+
+def show_menu(display):
+    clock = pygame.time.Clock()
+    menu_bg = Background(values.menu_bg_img, [0, 0])
+    while True:
+        display.blit(menu_bg.image, menu_bg.rect)
+        clock.tick(values.FPS)
+        print_text(display, 'COSMO SMASHER', values.caption_x, values.caption_y, font_size=values.caption_size,
+                   font_color=values.caption_color)
+        print_menu_buttons(display)
+        pos = pygame.mouse.get_pos()
+        color_menu_buttons(pos)
+        for i in pygame.event.get():
+            # Обработка результата нажатия клавиши ESCAPE и комбинации Alt + F4
+            if i.type == pygame.QUIT:
+                sys.exit()
+            elif i.type == pygame.MOUSEBUTTONDOWN:
+                if i.button == 1:
+                    if values.play_tl[0] <= pos[0] <= values.play_br[0] \
+                            and values.play_tl[1] <= pos[1] <= values.play_br[1]:
+                        return
+                    elif values.exit_menu_tl[0] <= pos[0] <= values.exit_menu_br[0] \
+                            and values.exit_menu_tl[1] <= pos[1] <= values.exit_menu_br[1]:
+                        sys.exit()
+                    elif values.key_menu_tl[0] <= pos[0] <= values.key_menu_br[0] \
+                            and values.key_menu_tl[1] <= pos[1] <= values.key_menu_br[1]:
+                        values.control = values.key_control
+                    elif values.mouse_menu_tl[0] <= pos[0] <= values.mouse_menu_br[0] \
+                            and values.mouse_menu_tl[1] <= pos[1] <= values.mouse_menu_br[1]:
+                        values.control = values.mouse_control
+                    # print(pos)
+        pygame.display.update()
+
+
+def print_menu_buttons(display):
+    """
+    Необходима для вывода текста кнопок Exit и Try again с заданными параметрами
+    :param display: Дисплей для вывода и отрисовки
+    """
+    print_text(display, 'PLAY', values.play_x, values.play_y, font_size=values.play_size,
+               font_color=values.play_color)
+    print_text(display, 'CONTROL', values.control_x, values.control_y, font_size=values.control_size,
+               font_color=values.control_color)
+    print_text(display, 'Mouse', values.mouse_menu_x, values.mouse_menu_y, font_size=values.mouse_menu_size,
+               font_color=values.mouse_menu_color)
+    print_text(display, 'Keyboard', values.key_menu_x, values.key_menu_y, font_size=values.key_menu_size,
+               font_color=values.key_menu_color)
+    print_text(display, 'Exit', values.exit_menu_x, values.exit_menu_y, font_size=values.exit_menu_size,
+               font_color=values.exit_menu_color)
+
+
+def color_menu_buttons(pos):
+    """
+    Необходима для контроля цвета текста кнопок Try again и Exit в зависимости
+    от положения курсора пользователя
+    :param pos: Координаты положения курсора мыши
+    """
+    if values.control == 'keyboard':
+        values.key_menu_color = colors.GRAY
+        values.mouse_menu_color = colors.WHITE
+    else:
+        values.key_menu_color = colors.WHITE
+        values.mouse_menu_color = colors.GRAY
+
+    if values.play_tl[0] <= pos[0] <= values.play_br[0] \
+            and values.play_tl[1] <= pos[1] <= values.play_br[1]:
+        values.play_color = colors.GRAY
+    elif values.exit_menu_tl[0] <= pos[0] <= values.exit_menu_br[0] \
+            and values.exit_menu_tl[1] <= pos[1] <= values.exit_menu_br[1]:
+        values.exit_menu_color = colors.GRAY
+    elif values.key_menu_tl[0] <= pos[0] <= values.key_menu_br[0] \
+            and values.key_menu_tl[1] <= pos[1] <= values.key_menu_br[1]:
+        values.key_menu_color = colors.GRAY
+    elif values.mouse_menu_tl[0] <= pos[0] <= values.mouse_menu_br[0] \
+            and values.mouse_menu_tl[1] <= pos[1] <= values.mouse_menu_br[1]:
+        values.mouse_menu_color = colors.GRAY
+    else:
+        values.play_color = colors.WHITE
+        values.exit_menu_color = colors.WHITE
