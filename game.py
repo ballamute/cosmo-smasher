@@ -99,7 +99,6 @@ def end_events(events, pos):
         if i.type == pygame.QUIT:
             sys.exit()
         if i.type == pygame.MOUSEBUTTONDOWN:
-            print(pos)
             if pygame.mouse.get_pressed(3)[0]:
                 if values.try_again_tl[0] <= pos[0] <= values.try_again_br[0] and values.try_again_tl[1] <= pos[1] \
                         <= values.try_again_br[1]:
