@@ -5,7 +5,11 @@ game_name = "Cosmo smasher"
 key_control = "keyboard"
 mouse_control = "mouse"
 def_font = "fonts/rostov.ttf"
-control = mouse_control
+control = key_control
+easy_diff = "easy"
+medium_diff = "medium"
+hard_diff = "hard"
+difficulty = easy_diff
 game_is_on = False
 started = False
 again = False
@@ -15,9 +19,17 @@ dis_height = 600
 center_x = dis_width // 2
 center_y = dis_height // 2
 
+# Время для убийства
+easy_mouse_kill_time = 1
+medium_mouse_kill_time = 0.75
+hard_mouse_kill_time = 0.5
+easy_key_kill_time = 3
+medium_key_kill_time = 2.5
+hard_key_kill_time = 2
+
 # Значения переменных игрока
 player_move_speed = 2
-player_time_for_kill = 2
+player_time_for_kill = easy_key_kill_time
 player_score = 0
 player_armor = 0
 player_armor_got = 0
@@ -55,7 +67,7 @@ praise_chs = "Bull eye!"
 game_bg_img = "pics/game_bg.png"
 menu_bg_img = "pics/menu_bg.jpg"
 def_en_image = "pics/party_saucer.png"
-cross_img = "pics/cross1.png"
+cross_img = "pics/cross.png"
 enemy_images = ["pics/party_creamer.png", "pics/party_saucer.png", "pics/wing_fish.png", "pics/skeleton.png"]
 friends_images = ["pics/bear.png", "pics/bear1.png"]
 
@@ -76,6 +88,7 @@ ns_time = 1
 ns_x = dis_width // 2 - 65
 ns_y = 10
 ns_color = colors.WHITE
+ns_coefficient = 1/3
 
 # Значения переменных отображения очков
 score_x = 10
@@ -145,7 +158,7 @@ play_br = (542, 320)
 play_x = center_x - 70
 play_y = center_y - 20
 play_size = 50
-play_color = colors.WHITE
+play_color = colors.GREEN
 
 # Значения переменных отображения кнопки Exit in menu
 exit_menu_tl = (461, 508)
@@ -153,31 +166,31 @@ exit_menu_br = (522, 536)
 exit_menu_x = center_x - 40
 exit_menu_y = center_y + 205
 exit_menu_size = 40
-exit_menu_color = colors.WHITE
+exit_menu_color = colors.BRICK_RED
 
 # Значения переменных отображения кнопки mouse in menu
-mouse_menu_tl = (552, 393)
-mouse_menu_br = (638, 414)
+mouse_menu_tl = (552, 378)
+mouse_menu_br = (638, 399)
 mouse_menu_x = center_x + 50
-mouse_menu_y = center_y + 90
+mouse_menu_y = center_y + 75
 mouse_menu_size = 30
 mouse_menu_color = colors.WHITE
 
-# Значения переменных отображения кнопки mouse in menu
-key_menu_tl = (301, 393)
-key_menu_br = (437, 412)
+# Значения переменных отображения кнопки keyboard in menu
+key_menu_tl = (301, 378)
+key_menu_br = (437, 397)
 key_menu_x = center_x - 200
-key_menu_y = center_y + 90
+key_menu_y = center_y + 75
 key_menu_size = 30
 key_menu_color = colors.WHITE
 
 # Значения переменных отображения надписи control in menu
 control_x = center_x - 80
-control_y = center_y + 50
+control_y = center_y + 35
 control_size = 30
-control_color = colors.WHITE
+control_color = colors.DODGER_BLUE
 
-# Значения переменных отображения надписи control in menu
+# Значения переменных отображения кнопки back to the main menu
 back_tl = (357, 459)
 back_br = (625, 478)
 back_x = center_x - 145
@@ -190,3 +203,33 @@ caption_x = center_x - 340
 caption_y = center_y - 190
 caption_size = 90
 caption_color = colors.WHITE
+
+# Значения переменных отображения надписи difficulty in menu
+difficulty_x = center_x - 80
+difficulty_y = center_y + 110
+difficulty_size = 30
+difficulty_color = colors.DODGER_BLUE
+
+# Значения переменных отображения кнопки easy
+easy_tl = (321, 453)
+easy_br = (381, 479)
+easy_x = center_x - 180
+easy_y = center_y + 150
+easy_size = 30
+easy_color = colors.WHITE
+
+# Значения переменных отображения кнопки medium
+medium_tl = (436, 453)
+medium_br = (540, 473)
+medium_x = center_x - 65
+medium_y = center_y + 150
+medium_size = 30
+medium_color = colors.WHITE
+
+# Значения переменных отображения кнопки hard
+hard_tl = (582, 452)
+hard_br = (640, 473)
+hard_x = center_x + 80
+hard_y = center_y + 150
+hard_size = 30
+hard_color = colors.WHITE

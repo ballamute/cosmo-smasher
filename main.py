@@ -30,10 +30,9 @@ def main():
         game.show_menu(display)
         values.game_is_on = False
 
-    if values.control == 'keyboard':
-        values.player_time_for_kill = 2
-    else:
-        values.player_time_for_kill = 0.5
+    # Настройка сложности
+    game.set_difficulty()
+
     # Создание игрока и врага
     game_player = player.Player()
     game_enemy = enemy.Enemy()

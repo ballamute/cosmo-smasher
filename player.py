@@ -126,8 +126,6 @@ class Player(game.GameObject):
                 else:
                     game.print_game_over_text(display, self.score)
                 game.print_buttons(display)
-                pygame.display.update()
-
                 # Окрашивание кнопок, если на них наведен курсор
                 pos = pygame.mouse.get_pos()
                 game.color_buttons(pos)
@@ -136,10 +134,10 @@ class Player(game.GameObject):
                 game.end_events(events, pos)
                 if values.again:
                     return
+                pygame.display.update()
 
         # Проверка на победу
         if self.score >= values.win_border:
-
             # Обработка звука и смена сцены на сцену выигранной игры
             pygame.mixer.music.load(values.win_snd)
             pygame.mixer.music.play()
@@ -150,8 +148,6 @@ class Player(game.GameObject):
                 game.print_text(display, 'YOU WIN', values.win_x, values.win_y, font_size=values.win_size,
                                 font_color=values.win_color)
                 game.print_buttons(display)
-                pygame.display.update()
-
                 # Окрашивание кнопок, если на них наведен курсор
                 pos = pygame.mouse.get_pos()
                 game.color_buttons(pos)
@@ -160,6 +156,7 @@ class Player(game.GameObject):
                 game.end_events(events, pos)
                 if values.again:
                     return
+                pygame.display.update()
 
     def if_attacked(self, display, en):
         """

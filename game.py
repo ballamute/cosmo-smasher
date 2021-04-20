@@ -99,6 +99,7 @@ def end_events(events, pos):
         if i.type == pygame.QUIT:
             sys.exit()
         if i.type == pygame.MOUSEBUTTONDOWN:
+            print(pos)
             if pygame.mouse.get_pressed(3)[0]:
                 if values.try_again_tl[0] <= pos[0] <= values.try_again_br[0] and values.try_again_tl[1] <= pos[1] \
                         <= values.try_again_br[1]:
@@ -216,13 +217,20 @@ def track_event(pl, en):
 
 
 def process_shoot(pl, en):
+    """
+
+    :param pl:
+    :param en:
+    :return:
+    """
     values.line_color = values.line_shot_color
     values.started = True
     pygame.mixer.Sound.play(pl.shot_sound)
 
     # Задание места, попав в которое выстрел будет защитан как меткий
-    nice_shot_tl = (en.x + en.width // 3, en.y + en.height // 3)
-    nice_shot_br = (en.x + 2 * en.width // 3, en.y + 2 * en.height // 3)
+    nice_shot_tl = (en.x + int(values.ns_coefficient * en.width), en.y + int(values.ns_coefficient * en.height))
+    nice_shot_br = (en.x + int((1 - values.ns_coefficient) * en.width), en.y +
+                    int((1 - values.ns_coefficient) * en.height))
     if nice_shot_tl[0] <= pl.x <= nice_shot_br[0] and nice_shot_tl[1] <= pl.y <= nice_shot_br[1]:
         pl.shot_count(values.nice_shot_bonus, en)
         values.nice_shot = True
@@ -264,7 +272,27 @@ def show_menu(display):
                     elif values.mouse_menu_tl[0] <= pos[0] <= values.mouse_menu_br[0] \
                             and values.mouse_menu_tl[1] <= pos[1] <= values.mouse_menu_br[1]:
                         values.control = values.mouse_control
-                    # print(pos)
+                    elif values.easy_tl[0] <= pos[0] <= values.easy_br[0] \
+                            and values.easy_tl[1] <= pos[1] <= values.easy_br[1]:
+                        values.difficulty = values.easy_diff
+                        if values.control == values.key_control:
+                            values.player_time_for_kill = values.easy_key_kill_time
+                        elif values.control == values.mouse_control:
+                            values.player_time_for_kill = values.easy_mouse_kill_time
+                    elif values.medium_tl[0] <= pos[0] <= values.medium_br[0] \
+                            and values.medium_tl[1] <= pos[1] <= values.medium_br[1]:
+                        values.difficulty = values.medium_diff
+                        if values.control == values.key_control:
+                            values.player_time_for_kill = values.medium_key_kill_time
+                        elif values.control == values.mouse_control:
+                            values.player_time_for_kill = values.medium_mouse_kill_time
+                    elif values.hard_tl[0] <= pos[0] <= values.hard_br[0] \
+                            and values.hard_tl[1] <= pos[1] <= values.hard_br[1]:
+                        values.difficulty = values.hard_diff
+                        if values.control == values.key_control:
+                            values.player_time_for_kill = values.hard_key_kill_time
+                        elif values.control == values.mouse_control:
+                            values.player_time_for_kill = values.hard_mouse_kill_time
         pygame.display.update()
 
 
@@ -283,33 +311,82 @@ def print_menu_buttons(display):
                font_color=values.key_menu_color)
     print_text(display, 'Exit', values.exit_menu_x, values.exit_menu_y, font_size=values.exit_menu_size,
                font_color=values.exit_menu_color)
+    print_text(display, 'DIFFICULTY', values.difficulty_x, values.difficulty_y, font_size=values.difficulty_size,
+               font_color=values.difficulty_color)
+    print_text(display, 'Easy', values.easy_x, values.easy_y, font_size=values.easy_size, font_color=values.easy_color)
+    print_text(display, 'Medium', values.medium_x, values.medium_y, font_size=values.medium_size,
+               font_color=values.medium_color)
+    print_text(display, 'Hard', values.hard_x, values.hard_y, font_size=values.hard_size, font_color=values.hard_color)
 
 
 def color_menu_buttons(pos):
     """
-    Необходима для контроля цвета текста кнопок Try again и Exit в зависимости
-    от положения курсора пользователя
+    Необходима для контроля цвета текста кнопок Try again, Exit, надписи control и кнопок mouse и keyboard в меню
+    в зависимости от положения курсора пользователя
     :param pos: Координаты положения курсора мыши
     """
-    if values.control == 'keyboard':
+    # Контроль цвета нажатых кнопок выбора управления
+    if values.control == values.key_control:
         values.key_menu_color = colors.GRAY
         values.mouse_menu_color = colors.WHITE
     else:
         values.key_menu_color = colors.WHITE
         values.mouse_menu_color = colors.GRAY
 
+    if values.difficulty == values.easy_diff:
+        values.easy_color = colors.GRAY
+        values.medium_color = colors.WHITE
+        values.hard_color = colors.WHITE
+    elif values.difficulty == values.medium_diff:
+        values.easy_color = colors.WHITE
+        values.medium_color = colors.GRAY
+        values.hard_color = colors.WHITE
+    elif values.difficulty == values.hard_diff:
+        values.easy_color = colors.WHITE
+        values.medium_color = colors.WHITE
+        values.hard_color = colors.GRAY
+
+    # Контроль цвета кнопок при наведении на них курсора
     if values.play_tl[0] <= pos[0] <= values.play_br[0] \
             and values.play_tl[1] <= pos[1] <= values.play_br[1]:
-        values.play_color = colors.GRAY
+        values.play_color = colors.DARK_GREEN
     elif values.exit_menu_tl[0] <= pos[0] <= values.exit_menu_br[0] \
             and values.exit_menu_tl[1] <= pos[1] <= values.exit_menu_br[1]:
-        values.exit_menu_color = colors.GRAY
-    elif values.key_menu_tl[0] <= pos[0] <= values.key_menu_br[0] \
+        values.exit_menu_color = colors.MAROON
+    else:
+        values.play_color = colors.GREEN
+        values.exit_menu_color = colors.BRICK_RED
+
+    if values.key_menu_tl[0] <= pos[0] <= values.key_menu_br[0] \
             and values.key_menu_tl[1] <= pos[1] <= values.key_menu_br[1]:
         values.key_menu_color = colors.GRAY
     elif values.mouse_menu_tl[0] <= pos[0] <= values.mouse_menu_br[0] \
             and values.mouse_menu_tl[1] <= pos[1] <= values.mouse_menu_br[1]:
         values.mouse_menu_color = colors.GRAY
-    else:
-        values.play_color = colors.WHITE
-        values.exit_menu_color = colors.WHITE
+
+    if values.easy_tl[0] <= pos[0] <= values.easy_br[0] \
+            and values.easy_tl[1] <= pos[1] <= values.easy_br[1]:
+        values.easy_color = colors.GRAY
+    elif values.medium_tl[0] <= pos[0] <= values.medium_br[0] \
+            and values.medium_tl[1] <= pos[1] <= values.medium_br[1]:
+        values.medium_color = colors.GRAY
+    elif values.hard_tl[0] <= pos[0] <= values.hard_br[0] \
+            and values.hard_tl[1] <= pos[1] <= values.hard_br[1]:
+        values.hard_color = colors.GRAY
+
+
+def set_difficulty():
+    if values.control == values.mouse_control:
+        if values.difficulty == values.easy_diff:
+            values.player_time_for_kill = values.easy_mouse_kill_time
+        elif values.difficulty == values.medium_diff:
+            values.player_time_for_kill = values.medium_mouse_kill_time
+        else:
+            values.player_time_for_kill = values.hard_mouse_kill_time
+    elif values.control == values.key_control:
+        if values.difficulty == values.easy_diff:
+            values.player_time_for_kill = values.easy_key_kill_time
+        elif values.difficulty == values.medium_diff:
+            values.player_time_for_kill = values.medium_key_kill_time
+        else:
+            values.player_time_for_kill = values.hard_key_kill_time
