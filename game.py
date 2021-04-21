@@ -95,10 +95,10 @@ def end_events(events, pos):
     :param events: Массив событий клавиатуры и мыши
     :param pos: Координаты положения курсора мыши
     """
-    for i in events:
-        if i.type == pygame.QUIT:
+    for event in events:
+        if event.type == pygame.QUIT:
             sys.exit()
-        if i.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN:
             if pygame.mouse.get_pressed(3)[0]:
                 if values.try_again_tl[0] <= pos[0] <= values.try_again_br[0] and values.try_again_tl[1] <= pos[1] \
                         <= values.try_again_br[1]:
@@ -142,7 +142,7 @@ def print_bear_shot_text(display, score):
     """
     print_text(display, 'How dare you shoot a harmless bear?', values.bear_ask_x, values.bear_ask_y,
                font_size=values.bear_ask_size, font_color=values.bear_ask_color)
-    print_text(display, 'YOUR FUCKING SCORE IS: ' + str(score), values.bear_score_x, values.bear_score_y,
+    print_text(display, 'YOUR SCORE IS: ' + str(score), values.bear_score_x, values.bear_score_y,
                font_size=values.bear_score_size, font_color=values.bear_score_color)
 
 
@@ -201,26 +201,26 @@ def track_event(pl, en):
     :param en: Объект класса Enemy
     """
 
-    for i in pygame.event.get():
+    for event in pygame.event.get():
         # Обработка результата нажатия клавиши ESCAPE и комбинации Alt + F4
-        if i.type == pygame.QUIT:
+        if event.type == pygame.QUIT:
             sys.exit()
         elif values.control == values.key_control:
-            if i.type == pygame.KEYDOWN:
-                if i.key == pygame.K_SPACE:
-                    process_shoot(pl, en)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    process_shot(pl, en)
         elif values.control == values.mouse_control:
-            if i.type == pygame.MOUSEBUTTONDOWN:
-                if i.button == 1:
-                    process_shoot(pl, en)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == values.LMB_key:
+                    process_shot(pl, en)
 
 
-def process_shoot(pl, en):
+def process_shot(pl, en):
     """
-
-    :param pl:
-    :param en:
-    :return:
+    Необходима для обработки выстрела, его визуализации, вывода аудио и для начисления очков в зависимости от меткости
+    попадания
+    :param pl: Объект класса Player
+    :param en: Объект класса Enemy
     """
     values.line_color = values.line_shot_color
     values.started = True
@@ -243,6 +243,10 @@ def process_shoot(pl, en):
 
 
 def show_menu(display):
+    """
+    Необходима для вывода главного меню и обработки нажатия кнопок на нем
+    :param display: Дисплей для вывода и отрисовки
+    """
     clock = pygame.time.Clock()
     menu_bg = Background(values.menu_bg_img, [0, 0])
     while True:
@@ -253,12 +257,13 @@ def show_menu(display):
         print_menu_buttons(display)
         pos = pygame.mouse.get_pos()
         color_menu_buttons(pos)
-        for i in pygame.event.get():
+        for event in pygame.event.get():
             # Обработка результата нажатия клавиши ESCAPE и комбинации Alt + F4
-            if i.type == pygame.QUIT:
+            if event.type == pygame.QUIT:
                 sys.exit()
-            elif i.type == pygame.MOUSEBUTTONDOWN:
-                if i.button == 1:
+            # Обработка результата нажатия кнопок в главном меню
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == values.LMB_key:
                     if values.play_tl[0] <= pos[0] <= values.play_br[0] \
                             and values.play_tl[1] <= pos[1] <= values.play_br[1]:
                         return
@@ -297,7 +302,7 @@ def show_menu(display):
 
 def print_menu_buttons(display):
     """
-    Необходима для вывода текста кнопок Exit и Try again с заданными параметрами
+    Необходима для вывода текста кнопок и просто текста с заданными параметрами
     :param display: Дисплей для вывода и отрисовки
     """
     print_text(display, 'PLAY', values.play_x, values.play_y, font_size=values.play_size,
@@ -320,8 +325,7 @@ def print_menu_buttons(display):
 
 def color_menu_buttons(pos):
     """
-    Необходима для контроля цвета текста кнопок Try again, Exit, надписи control и кнопок mouse и keyboard в меню
-    в зависимости от положения курсора пользователя
+    Необходима для контроля цвета текста кнопок главного меню в зависимости от положения курсора пользователя
     :param pos: Координаты положения курсора мыши
     """
     # Контроль цвета нажатых кнопок выбора управления
@@ -332,6 +336,7 @@ def color_menu_buttons(pos):
         values.key_menu_color = colors.WHITE
         values.mouse_menu_color = colors.GRAY
 
+    # Контроль цвета нажатых кнопок выбора сложности
     if values.difficulty == values.easy_diff:
         values.easy_color = colors.GRAY
         values.medium_color = colors.WHITE
@@ -375,6 +380,9 @@ def color_menu_buttons(pos):
 
 
 def set_difficulty():
+    """
+    Необходима для контроля времени для убийства в зависимости от выбранного в меню управления и сложности
+    """
     if values.control == values.mouse_control:
         if values.difficulty == values.easy_diff:
             values.player_time_for_kill = values.easy_mouse_kill_time

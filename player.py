@@ -174,6 +174,6 @@ class Player(game.GameObject):
                 return
             display.fill(colors.RED)
             pygame.display.update()
-            time.sleep(0.1)
-            self.armor -= 1
+            time.sleep(values.red_screen_delay)
+            self.armor -= values.overtime_penalty
             en.is_alive = False

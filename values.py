@@ -2,17 +2,21 @@ import colors
 
 # Значения игры
 game_name = "Cosmo smasher"
+def_font = "fonts/rostov.ttf"
+
 key_control = "keyboard"
 mouse_control = "mouse"
-def_font = "fonts/rostov.ttf"
 control = key_control
+
 easy_diff = "easy"
 medium_diff = "medium"
 hard_diff = "hard"
 difficulty = easy_diff
+
 game_is_on = False
 started = False
 again = False
+
 FPS = 300
 dis_width = 1000
 dis_height = 600
@@ -26,6 +30,7 @@ hard_mouse_kill_time = 0.5
 easy_key_kill_time = 3
 medium_key_kill_time = 2.5
 hard_key_kill_time = 2
+red_screen_delay = 0.1
 
 # Значения переменных игрока
 player_move_speed = 2
@@ -57,7 +62,9 @@ nice_shot_start = 0
 nice_shot_bonus = 2
 shot_bonus = 1
 miss_penalty = 1
+overtime_penalty = 1
 shot = " "
+LMB_key = 1
 
 # Значения переменных похвалы
 praises = ["Bull eye!", "Nice shot!", "What an aim!", "Amazing!", "Perfect!"]
