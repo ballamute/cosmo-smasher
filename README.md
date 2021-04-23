@@ -7,7 +7,7 @@ pip show pygame
 Для того чтобы запустить игру, необходимо прописать в консоли команды:  
 ```bash
 cd <Путь к директории, где будет лежать игра>
-git clone https://github.com/ballamute/cosmo-smasher.git -b dev
+git clone https://github.com/ballamute/cosmo-smasher.git
 cd cosmo-smasher
 python3 main.py
 ```
