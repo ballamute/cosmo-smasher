@@ -188,9 +188,9 @@ def print_interface(display, pl, en):
     :param pl: Объект класса Player
     :param en: Объект класса Enemy
     """
-    print_text(display, "SCORE: " + str(pl.score), values.score_x, values.score_y, font_color=values.score_color)
-    print_text(display, "ARMOR: " + str(pl.armor), values.armor_x, values.armor_y, font_color=values.armor_color)
-    print_text(display, "TIME FOR KILL: " + fix(pl.time_for_kill - (time.time() - en.born_time), 2),
+    print_text(display, f"SCORE: {pl.score}", values.score_x, values.score_y, font_color=values.score_color)
+    print_text(display, f"ARMOR: {pl.armor}", values.armor_x, values.armor_y, font_color=values.armor_color)
+    print_text(display, f"TIME FOR KILL: {fix(pl.time_for_kill - (time.time() - en.born_time), 2)}",
                values.t_for_k_x, values.t_for_k_y, font_color=values.t_for_k_color)
 
 
