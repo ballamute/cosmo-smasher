@@ -11,12 +11,8 @@ class Enemy(game.GameObject):
     """
     Класс Enemy используется для создания врага
     Наследуется от класса GameObject
-    В классе Enemy определены функции:
-    __init__()
-    rand_image()
-    born()
-    draw(display)
     """
+
     def __init__(self):
         """
         Инициализация значений, связанных с врагом
@@ -24,7 +20,7 @@ class Enemy(game.GameObject):
         """
         game.GameObject.__init__(self)
         self.is_alive = values.is_alive
-        self.image_name = "pics/party_saucer.png"
+        self.image_name = values.def_en_image
         self.image = pygame.image.load(self.image_name)
         self.width = self.image.get_width()
         self.height = self.image.get_height()
@@ -34,10 +30,12 @@ class Enemy(game.GameObject):
         """
         Необходима для выбора случайного изображения врага
         """
+        # 10 как правая граница randint задает шанс появления Enemy и шанс появления мишки
         if random.randint(0, 10) != 0:
             self.image_name = values.enemy_images[random.randint(0, len(values.enemy_images)) - 1]
         else:
-            self.image_name = values.friends_images[random.randint(0, len(values.friends_images)) - 1]
+            if values.started:
+                self.image_name = values.friends_images[random.randint(0, len(values.friends_images)) - 1]
         self.image = pygame.image.load(self.image_name)
 
     def born(self):
